@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Booking Confirmed</h2>
+
+<p>Hello {{ user.username }},</p>
+
+<p>Your movie ticket booking is confirmed.</p>
+
+<h3>Booking Details</h3>
+
+<p><strong>Movie:</strong> {{ movie.name }}</p>
+
+<p><strong>Theater:</strong> {{ theater.name }}</p>
+
+<p><strong>Seats:</strong>
+{% for seat in seats %}
+{{ seat.seat_number }}{% if not forloop.last %}, {% endif %}
+{% endfor %}
+</p>
+
+<p><strong>Amount Paid:</strong> ₹{{ amount }}</p>
+
+<p>Please keep this email for your records.</p>
+
+<p>
+Thank you,<br>
+BookMySeat Team
+</p>
+
+</body>
+</html>
