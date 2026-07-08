@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
-FRONTEND_DIR = BASE_DIR / "frontend" / "dist"
+FRONTEND_DIR = None
 
 
 SECRET_KEY = os.environ.get(
@@ -19,7 +19,7 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
-    "127.0.0.1,localhost"
+    "127.0.0.1,localhost,.koyeb.app,.vercel.app"
 ).split(",")
 
 CSRF_TRUSTED_ORIGINS = os.environ.get(
@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    "corsheaders",
+
     "users",
     "movies",
 ]
@@ -44,6 +46,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    
+    "corsheaders.middleware.CorsMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -82,7 +86,6 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            FRONTEND_DIR,
             BASE_DIR / "templates",
         ],
         "APP_DIRS": True,
@@ -133,9 +136,6 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 STATICFILES_DIRS = []
-
-if (FRONTEND_DIR / "assets").exists():
-    STATICFILES_DIRS.append(FRONTEND_DIR / "assets")
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -197,3 +197,12 @@ LOGGING = {
         },
     },
 }
+
+CORS_ALLOWED_ORIGINS = os.environ.get(
+    "CORS_ALLOWED_ORIGINS",
+    "http://127.0.0.1:5173,http://localhost:5173"
+).split(",")
+
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
