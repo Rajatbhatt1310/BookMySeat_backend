@@ -2,8 +2,6 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.generic import TemplateView
-from django.views.static import serve
 
 from movies import views as movie_views
 from users import views as user_views
@@ -41,58 +39,18 @@ urlpatterns = [
     path("api/my-bookings/", movie_views.my_bookings),
 
     # Payment APIs
-    path(
-        "api/create-payment-order/",
-        movie_views.create_payment_order,
-    ),
+    path("api/create-payment-order/", movie_views.create_payment_order),
+    path("api/verify-payment/", movie_views.verify_payment),
+    path("api/razorpay-webhook/", movie_views.razorpay_webhook),
 
-    path(
-        "api/admin/analytics/",
-        movie_views.admin_analytics_api,
-    ),
-
-    path(
-        "api/verify-payment/",
-        movie_views.verify_payment,
-    ),
-
-    path(
-        "api/razorpay-webhook/",
-        movie_views.razorpay_webhook,
-    ),
-
-    # React assets
-    path(
-        "assets/<path:path>",
-        serve,
-        {
-            "document_root": settings.FRONTEND_DIR / "assets",
-        },
-    ),
-
-    # Media files
-    path(
-        "media/<path:path>",
-        serve,
-        {
-            "document_root": settings.MEDIA_ROOT,
-        },
-    ),
+    # Admin Analytics
+    path("api/admin/analytics/", movie_views.admin_analytics_api),
 ]
 
+
+# Serve uploaded media files in development only
 if settings.DEBUG:
     urlpatterns += static(
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT,
     )
-
-urlpatterns += [
-    path(
-        "",
-        TemplateView.as_view(template_name="index.html"),
-    ),
-    path(
-        "<path:path>",
-        TemplateView.as_view(template_name="index.html"),
-    ),
-]
